@@ -1,0 +1,56 @@
+tail recursion exercises
+
+1.)list mapping
+takes a function and an input list, and returns the list after applying the function to each element
+list_map (+1) [1,2,3,4,5,6]
+[2,3,4,5,6,7]
+list_map (> 'i') "hello"
+[False,False,True,True,True]
+list_map (\x -> x) []
+[]
+list_map length ["functional","gg","easy"]
+[10,2,4]
+
+-what's the type of list_map?
+type of list_map
+list_map :: (a -> b) -> [a] -> [b]
+
+-can you use tail recursion?
+list_map :: (a -> b) -> [a] -> [b]
+list_map f xs = reverse (list_map_tail f xs [])
+  where
+    list_map_tail _ [] acc     = acc
+    list_map_tail f (x:xs) acc = list_map_tail f xs (f x : acc)
+
+
+2.)zipper [] _ = []
+   zipper _ [] = []
+   zipper (x:xs) (y:ys) =
+    (x,y) : zipper xs ys
+
+-write three more test cases for list_map
+
+Test case 1: Doubling each number in the list
+list_map (*2) [3,5,7] == [6,10,14]
+
+Test case 2: Converting characters to uppercase
+list_map toUpper "hello" == "HELLO"
+
+Test case 3: Extracting the first element of each tuple
+list_map fst [(1, "one"), (2, "two"), (3, "three")] == [1,2,3]
+
+-rewrite zipper using tail recursion
+
+zipper :: [a] -> [b] -> [(a, b)]
+zipper xs ys = reverse (zipper_tail xs ys [])
+  where
+    zipper_tail [] _ acc = acc
+    zipper_tail _ [] acc = acc
+    zipper_tail (x:xs) (y:ys) acc = zipper_tail xs ys ((x, y) : acc)
+
+-challenge: define fibs, the list of Fibonacci numbers, in the same way as facs
+facs = 1 : zipWith (*) [1..] facs
+hint: use function tail
+
+fibs :: [Integer]
+fibs = 0 : 1 : zipWith (+) fibs (tail fibs)
